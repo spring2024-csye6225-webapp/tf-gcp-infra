@@ -57,3 +57,12 @@ variable "vpc_count" {
   description = "No of VPC's that has to be created"
   type        = number
 }
+
+
+variable "zone" {
+  description ="zone"
+}
+
+variable "image_name" { 
+  description = "image name"
+}
