@@ -7,13 +7,13 @@ variable "region" {
 }
 
 
-variable "webapp_subnet_cidr" {
-  description = "CIDR address range for webapp subnet"
-}
+# variable "webapp_subnet_cidr" {
+#   description = "CIDR address range for webapp subnet"
+# }
 
-variable "db_subnet_cidr" {
-  description = "CIDR address range for db subnet"
-}
+# variable "db_subnet_cidr" {
+#   description = "CIDR address range for db subnet"
+# }
 
 
 variable "webapp_destination_route" {
@@ -50,4 +50,10 @@ variable "hop_gateway_value" {
 
 variable "service_key_route" {
   description = "service key file route"
+}
+
+
+variable "vpc_count" {
+  description = "No of VPC's that has to be created"
+  type        = number
 }
