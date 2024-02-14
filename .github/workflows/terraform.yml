@@ -24,9 +24,3 @@ jobs:
 
       - name: Validate Terraform changes
         run: terraform validate
-
-      - name: Terraform apply
-        run: |
-          terraform apply -auto-approve
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.SERVICE_KEY_ROUTE }}
