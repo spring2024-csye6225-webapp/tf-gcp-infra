@@ -14,14 +14,4 @@ output "db_subnet_cidr" {
   }
 }
 
-output "webapp_subnet_cidr" {
-  value = {
-    for idx, subnet in google_compute_subnetwork.webapp_subnet : idx => subnet.ip_cidr_range
-  }
-}
 
-output "db_subnet_cidr" {
-  value = {
-    for idx, subnet in google_compute_subnetwork.db_subnet : idx => subnet.ip_cidr_range
-  }
-}
