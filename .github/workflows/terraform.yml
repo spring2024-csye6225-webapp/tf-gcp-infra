@@ -1,4 +1,4 @@
-name: Terraform apply
+name: Terraform validate
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v3
 
-      - name: Setting up terraform
+      - name: Setting up Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform-version: latest
