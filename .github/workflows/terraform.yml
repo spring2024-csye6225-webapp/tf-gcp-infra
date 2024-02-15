@@ -1,3 +1,4 @@
+
 name: Terraform validate
 
 on:
@@ -13,7 +14,6 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3
-
       - name: Setting up Terraform
         uses: hashicorp/setup-terraform@v1
         with:
