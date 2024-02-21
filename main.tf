@@ -1,3 +1,4 @@
+
 provider "google" {
   credentials = file(var.service_key_route)
   project     = var.project_id
@@ -6,7 +7,7 @@ provider "google" {
 
 resource "google_compute_network" "vpc_network" {
   count                   = var.vpc_count
-  name                    = "${var.vpc_name}-${count.index}
+  name                    = "${var.vpc_name}-${count.index}"
   auto_create_subnetworks = false
 }
 
