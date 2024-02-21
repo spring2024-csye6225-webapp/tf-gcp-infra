@@ -57,7 +57,6 @@ variable "vpc_count" {
   description = "No of VPC's that has to be created"
   type        = number
 }
-<<<<<<< HEAD
 
 
 variable "zone" {
@@ -67,5 +66,3 @@ variable "zone" {
 variable "image_name" { 
   description = "image name"
 }
-=======
->>>>>>> b4c9a3e (terraform changes for multiple vpc)
