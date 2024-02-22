@@ -82,6 +82,7 @@ resource "google_compute_instance" "vm_instance" {
       type  = "pd-balanced"
     }
   }
+  tags = ["webapp-subnet-0"]
 
   network_interface {
     network    = google_compute_network.vpc_network[count.index].self_link
@@ -89,8 +90,8 @@ resource "google_compute_instance" "vm_instance" {
     access_config {
       // Ephemeral public IP
     }
+
   }
-  tags = ["webapp-subnet-0"]
 
 }
 
