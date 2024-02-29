@@ -54,19 +54,23 @@ variable "image_name" {
 
 variable "database_name" {
   description = "Name of the database"
+  default     = "webapp"
 }
 
 variable "database_user_name" {
   description = "Name of the database user"
+  default     = "webapp"
 }
 
 
 variable "cloudsql_instance_name" {
   description = "Name of cloud sql instance"
+  default     = "custom-cloud-instance-test"
 }
 
 
 variable "deletion_protection" {
+  default     = "false"
   description = "Deletion protection toggle for the cloud sql instance"
 }
 
