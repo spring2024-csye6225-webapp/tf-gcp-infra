@@ -93,3 +93,72 @@ variable "ipv4_enabled" {
   default     = false
   description = "ipv4 enablement toggle"
 }
+
+
+variable "ip_instance_name" {
+  default     = "instance-ip"
+  description = "ip instance name"
+}
+
+variable "ip_instance_purpose" {
+  default     = "VPC_PEERING"
+  description = "ip instance purpose"
+}
+
+variable "ip_instance_address_type" {
+  default     = "INTERNAL"
+  description = "ip instance address type"
+}
+
+
+variable "ip_instance_prefix_length" {
+  default     = 16
+  description = "ip instance prefix length"
+}
+
+
+variable "private_connection_delete_policy" {
+  default     = "ABANDON"
+  description = "delete policy status"
+}
+
+
+variable "posgres_version" {
+  default     = "POSTGRES_14"
+  description = "postgresql version"
+}
+
+
+variable "postgres_tier" {
+  default     = "db-f1-micro"
+  description = "postgres instance tier"
+}
+
+
+variable "password_length" {
+  default     = 16
+  description = "length of the password"
+}
+
+
+variable "vm_instance_type" {
+  default     = "pd-balanced"
+  description = "type of the vm instance"
+}
+
+variable "vm_instance_name" {
+  default     = "vm-instance"
+  description = "name of the vm instance"
+}
+
+
+variable "vm_instance_machinetype" {
+  default     = "n1-standard-1"
+  description = "vm instance machine type"
+}
+
+
+variable "vm_instance_size" {
+  default     = 100
+  description = "vm instance machine size"
+}
