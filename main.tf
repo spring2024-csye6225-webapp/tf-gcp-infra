@@ -71,11 +71,11 @@ resource "google_compute_firewall" "allow_ssh" {
 
 //googlecomputeglobaladdress  create an IP 
 resource "google_compute_global_address" "instance_ip" {
-  name          = "instance-ip"
-  purpose       = "VPC_PEERING"
-  address_type  = "INTERNAL"
+  name          = var.ip_instance_name
+  purpose       = var.ip_instance_purpose
+  address_type  = var.ip_instance_address_type
   network       = google_compute_network.vpc_network[0].self_link
-  prefix_length = 16
+  prefix_length = var.ip_instance_prefix_length
 }
 resource "google_project_service" "service_networking" {
   project = var.project_id
@@ -86,7 +86,7 @@ resource "google_service_networking_connection" "private_connection" {
   network                 = google_compute_network.vpc_network[0].name
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.instance_ip.name]
-  deletion_policy         = "ABANDON"
+  deletion_policy         = var.private_connection_delete_policy
   depends_on = [
     google_project_service.service_networking,
     google_compute_network.vpc_network
@@ -100,13 +100,13 @@ resource "google_service_networking_connection" "private_connection" {
 
 resource "google_sql_database_instance" "cloud_instance" {
   name                = var.cloudsql_instance_name
-  database_version    = "POSTGRES_14"
+  database_version    = var.posgres_version
   region              = var.region
   deletion_protection = var.deletion_protection
   project             = var.project_id
   depends_on          = [google_service_networking_connection.private_connection, google_compute_network.vpc_network]
   settings {
-    tier              = "db-f1-micro"
+    tier              = var.postgres_tier
     availability_type = var.availability_type
     disk_type         = var.disk_type
     disk_size         = var.disk_size
@@ -132,20 +132,20 @@ resource "google_sql_user" "database_user" {
 }
 
 resource "random_password" "generated_password" {
-  length  = 16
+  length  = var.password_length
   special = false
 }
 
 resource "google_compute_instance" "vm_instance" {
-  name         = "vm-instance"
-  machine_type = "n1-standard-1"
+  name         = var.vm_instance_name
+  machine_type = var.vm_instance_machinetype
   zone         = var.zone
 
   boot_disk {
     initialize_params {
       image = var.image_name
-      size  = 100
-      type  = "pd-balanced"
+      size  = var.vm_instance_size
+      type  = var.vm_instance_type
     }
   }
 
