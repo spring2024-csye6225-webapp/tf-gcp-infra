@@ -11,10 +11,11 @@ resource "google_compute_network" "vpc_network" {
 }
 
 resource "google_compute_subnetwork" "webapp_subnet" {
-  count         = var.vpc_count
-  name          = "${var.webapp_subnet_name}-${count.index}"
-  ip_cidr_range = var.webapp_subnet_cidr[count.index]
-  network       = google_compute_network.vpc_network[count.index].self_link
+  count                    = var.vpc_count
+  name                     = "${var.webapp_subnet_name}-${count.index}"
+  ip_cidr_range            = var.webapp_subnet_cidr[count.index]
+  network                  = google_compute_network.vpc_network[count.index].self_link
+  private_ip_google_access = false
 }
 
 resource "google_compute_subnetwork" "db_subnet" {
