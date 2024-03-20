@@ -132,16 +132,62 @@ resource "google_sql_user" "database_user" {
   password = random_password.generated_password.result
 }
 
+
+resource "google_compute_firewall" "firewall_postgres" {
+  name      = var.postgres_firewall_name
+  direction = var.postgres_firewall_direction
+  network   = google_compute_network.vpc_network[0].self_link
+  deny {
+    protocol = var.postgres_firewall_deny_protocol
+    ports    = var.postgres_firewall_deny_ports
+  }
+}
+
+resource "google_compute_firewall" "firewall_postgres_allow" {
+  name      = "firewall-postgres-allow"
+  direction = var.postgres_firewall_direction
+  network   = google_compute_network.vpc_network[0].self_link
+  allow {
+    protocol = var.postgres_firewall_allow_protocol
+    ports    = var.postgres_firewall_allow_ports
+  }
+  priority    = var.postgres_firewall_priority
+  target_tags = var.postgres_firewall_target_tags
+}
+
 resource "random_password" "generated_password" {
   length  = var.password_length
   special = false
 }
 
+resource "google_service_account" "vm_service_account" {
+  account_id = "abhaydee-vms-1"
+  display_name = "abhaydee-serviceaccount"
+}
+
+
+resource "google_project_iam_binding" "logging_admin_binding" {
+  project = var.project_id
+  role = "roles/logging.admin"
+  members = [ 
+     "serviceAccount:${google_service_account.vm_service_account.email}"
+   ]
+}
+
+resource "google_project_iam_binding" "monitoring_metric_write_binding" {
+  project = var.project_id
+  role = "roles/monitoring.metricWriter"
+  members = [
+    "serviceAccount:${google_service_account.vm_service_account.email}"
+  ]
+}
+
+
 resource "google_compute_instance" "vm_instance" {
   name         = var.vm_instance_name
   machine_type = var.vm_instance_machinetype
   zone         = var.zone
-
+  allow_stopping_for_update = true
   boot_disk {
     initialize_params {
       image = var.image_name
@@ -201,7 +247,20 @@ EOF
   }
 
   tags = ["webapp-subnet-0"]
+
+  service_account {
+    email = google_service_account.vm_service_account.email
+    scopes = ["logging-write", "monitoring"]
+  }
 }
 
+
+resource "google_dns_record_set" "webapp_dns_records" {
+  name = var.webapp_domain_name
+  type = var.webapp_dnsrecord_type
+  ttl = var.webapp_dns_ttl
+  managed_zone = var.managed_zone_webapp
+  rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
+}
 
 # echo "DB_HOST=${google_sql_database_instance.cloud_instance.ip_address}" >> .env
