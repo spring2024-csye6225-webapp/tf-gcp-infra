@@ -153,7 +153,7 @@ variable "vm_instance_name" {
 
 
 variable "vm_instance_machinetype" {
-  default     = "n1-standard-1"
+  default     = "e2-standard-2"
   description = "vm instance machine type"
 }
 
@@ -161,4 +161,57 @@ variable "vm_instance_machinetype" {
 variable "vm_instance_size" {
   default     = 100
   description = "vm instance machine size"
+}
+
+variable "postgres_firewall_name" {
+
+}
+
+variable "postgres_firewall_direction" {
+
+}
+
+variable "postgres_firewall_deny_protocol" {
+
+}
+
+
+variable "postgres_firewall_deny_ports" {
+
+}
+
+
+variable "postgres_firewall_allow_protocol" {
+
+}
+
+
+variable "postgres_firewall_allow_ports" {
+
+}
+
+variable "postgres_firewall_priority" {
+
+}
+
+
+variable "postgres_firewall_target_tags" {
+
+}
+
+
+variable "webapp_domain_name" {
+  description = "Webapp domain name description"
+}
+
+variable "webapp_dnsrecord_type" {
+  description = "Type of dns record to update"
+}
+
+variable "webapp_dns_ttl" {
+  description = "Time to Live of webapp domain"
+}
+
+variable "managed_zone_webapp" {
+  description = "Managed cloud dns zone for webapp"
 }
