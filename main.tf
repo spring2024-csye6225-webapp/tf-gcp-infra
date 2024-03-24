@@ -183,6 +183,56 @@ resource "google_project_iam_binding" "monitoring_metric_write_binding" {
 }
 
 
+
+resource "google_pubsub_topic" "verify_email_topic" { 
+  name = "verify_email"
+}
+
+resource "google_pubsub_subscription" "verify_email_subscription" {
+  name = "verify_email_subscription"
+  topic = google_pubsub_topic.verify_email_topic.name
+  ack_deadline_seconds = 120
+  expiration_policy {
+    ttl = "604800s"
+  }
+}
+
+resource "google_storage_bucket" "clouduser-bucket" {
+  name = "users-bucket"
+  location = "us-central1-a"
+  force_destroy = true
+
+  versioning {
+    enabled = true
+  }
+
+}
+
+resource "google_storage_bucket_object" "cloud_function_archive" {
+  name = "cloud-serverless.zip"
+  bucket = google_storage_bucket.clouduser-bucket.name
+  source = "./.terraform.zip"
+}
+
+resource "google_cloudfunctions_function" "verify_email_subscription" {
+  name = "verify_email_subscription"
+  runtime = "nodejs14"
+  source_archive_bucket = google_storage_bucket.clouduser-bucket.name
+  source_archive_object = google_storage_bucket_object.cloud_function_archive.name
+  trigger_http = true
+  entry_point = "verifyEmail"
+
+  event_trigger {
+    event_type = "google.pubsub.topic.publish"
+    resource = google_pubsub_topic.verify_email_topic.name
+  }
+
+  service_account_email = google_service_account.vm_service_account.email
+
+  //we need to add the IAM binding here 
+}
+
+
 resource "google_compute_instance" "vm_instance" {
   name         = var.vm_instance_name
   machine_type = var.vm_instance_machinetype
@@ -264,3 +314,5 @@ resource "google_dns_record_set" "webapp_dns_records" {
 }
 
 # echo "DB_HOST=${google_sql_database_instance.cloud_instance.ip_address}" >> .env
+
+
