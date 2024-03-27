@@ -185,7 +185,7 @@ resource "google_project_iam_binding" "monitoring_metric_write_binding" {
 
 
 resource "google_pubsub_topic" "verify_email_topic" { 
-  name = "verify_email"
+  name = "verifyUser"
 }
 
 resource "google_pubsub_subscription" "verify_email_subscription" {
