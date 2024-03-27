@@ -195,6 +195,7 @@ variable "postgres_firewall_priority" {
 }
 
 
+
 variable "postgres_firewall_target_tags" {
 
 }
@@ -214,4 +215,67 @@ variable "webapp_dns_ttl" {
 
 variable "managed_zone_webapp" {
   description = "Managed cloud dns zone for webapp"
+}
+
+variable "vpc_connector_name" {
+  description = "vpc connector name"
+}
+
+variable "vpc_connector_cidr" {
+  description = "vpc connector cidr"
+}
+
+variable "maingun_api_key" {
+  description = "api key for mailgun"
+}
+
+variable "entryPointTrigger" {
+  description = "entry point for the cloud function"
+}
+
+
+variable "available_memory" {
+  description = "available memory for the cloud function"
+}
+
+
+variable "nodejs_version" {
+  description = "nodejs version for cloud function"
+}
+
+variable "bucket_name" {
+  description = "bucket name"
+}
+
+variable "bucket_region" {
+  description = "region of bucket"
+}
+
+variable "bucket_object_name" {
+  description = "bucket object name"
+}
+
+variable "serverless_code_path" {
+  description = "location of the serverless code"
+}
+
+variable "cloud_function_name" {
+  description = "name of the cloud function"
+}
+
+
+variable "pubsub_topic_name" {
+  description = "name of the pubsub topic"
+}
+
+variable "pubsub_subscription_name" {
+  description = "name of the pubsub subscription"
+}
+
+variable "subscription_ttl" {
+  description = "ttl value of the subscription"
+}
+
+variable "ack_deadline_seconds" {
+  
 }

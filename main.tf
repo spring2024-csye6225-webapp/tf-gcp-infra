@@ -70,6 +70,20 @@ resource "google_compute_firewall" "allow_ssh" {
 }
 
 
+resource "google_compute_firewall" "allow-webapp-firewall" {
+  name    = "allow-firewall-${0}"
+  network = google_compute_network.vpc_network[0].name 
+
+  allow {
+    protocol = "tcp"
+    ports = ["5432"]
+
+  }
+  source_ranges = ["10.2.0.0/28"]
+  direction = "EGRESS"
+  priority = 500
+}
+
 //googlecomputeglobaladdress  create an IP 
 resource "google_compute_global_address" "instance_ip" {
   name          = var.ip_instance_name
@@ -184,53 +198,8 @@ resource "google_project_iam_binding" "monitoring_metric_write_binding" {
 
 
 
-resource "google_pubsub_topic" "verify_email_topic" { 
-  name = "verifyUser"
-}
 
-resource "google_pubsub_subscription" "verify_email_subscription" {
-  name = "verify_email_subscription"
-  topic = google_pubsub_topic.verify_email_topic.name
-  ack_deadline_seconds = 120
-  expiration_policy {
-    ttl = "604800s"
-  }
-}
 
-resource "google_storage_bucket" "clouduser-bucket" {
-  name = "users-bucket"
-  location = "us-central1-a"
-  force_destroy = true
-
-  versioning {
-    enabled = true
-  }
-
-}
-
-resource "google_storage_bucket_object" "cloud_function_archive" {
-  name = "cloud-serverless.zip"
-  bucket = google_storage_bucket.clouduser-bucket.name
-  source = "./.terraform.zip"
-}
-
-resource "google_cloudfunctions_function" "verify_email_subscription" {
-  name = "verify_email_subscription"
-  runtime = "nodejs14"
-  source_archive_bucket = google_storage_bucket.clouduser-bucket.name
-  source_archive_object = google_storage_bucket_object.cloud_function_archive.name
-  trigger_http = true
-  entry_point = "verifyEmail"
-
-  event_trigger {
-    event_type = "google.pubsub.topic.publish"
-    resource = google_pubsub_topic.verify_email_topic.name
-  }
-
-  service_account_email = google_service_account.vm_service_account.email
-
-  //we need to add the IAM binding here 
-}
 
 
 resource "google_compute_instance" "vm_instance" {
@@ -300,7 +269,7 @@ EOF
 
   service_account {
     email = google_service_account.vm_service_account.email
-    scopes = ["logging-write", "monitoring"]
+    scopes = ["logging-write", "monitoring", "pubsub"]
   }
 }
 
@@ -312,6 +281,95 @@ resource "google_dns_record_set" "webapp_dns_records" {
   managed_zone = var.managed_zone_webapp
   rrdatas = [google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip]
 }
+
+resource "google_pubsub_topic" "verify_email_topic" { 
+  name = var.pubsub_topic_name
+}
+
+resource "google_pubsub_topic_iam_binding" "pubsub_binding" {
+  project = var.project_id
+  role = "roles/pubsub.publisher"
+  members = [
+    "serviceAccount:${google_service_account.vm_service_account.email}"
+  ]
+  topic = google_pubsub_topic.verify_email_topic.name
+}
+
+resource "google_project_iam_binding" "invoker-binding" {
+   project = var.project_id
+  role = "roles/run.invoker"
+  members = [
+    "serviceAccount:${google_service_account.vm_service_account.email}"
+  ]
+}
+
+
+
+
+resource "google_pubsub_subscription" "verify_email_subscription" {
+  name = var.pubsub_subscription_name
+  topic = google_pubsub_topic.verify_email_topic.name
+  ack_deadline_seconds = var.ack_deadline_seconds
+  expiration_policy {
+    ttl = var.subscription_ttl
+  }
+}
+
+resource "google_storage_bucket" "cloud-serverless-003tx-unique-bucket-2-abc123" {
+  name = var.bucket_name
+  location = var.bucket_region
+  force_destroy = true
+
+  versioning {
+    enabled = true
+  }
+
+}
+
+resource "google_storage_bucket_object" "cloud_function_archive" {
+  name = var.bucket_object_name
+  bucket = google_storage_bucket.cloud-serverless-003tx-unique-bucket-2-abc123.name
+  source = var.serverless_code_path
+}
+
+
+
+resource "google_vpc_access_connector" "vpc-serverless-0003tx-unique-connector-2-xyz789" {
+  name        = var.vpc_connector_name
+  network     = google_compute_network.vpc_network[0].self_link
+  ip_cidr_range = var.vpc_connector_cidr 
+}
+
+
+
+resource "google_cloudfunctions_function" "verify_email_subscription" {
+  name                   = var.cloud_function_name
+  description            = "function to test user verification"
+  runtime                = var.nodejs_version
+  source_archive_bucket  = google_storage_bucket.cloud-serverless-003tx-unique-bucket-2-abc123.name
+  source_archive_object  = google_storage_bucket_object.cloud_function_archive.name
+  entry_point            = var.entryPointTrigger
+  event_trigger {
+    event_type = "google.pubsub.topic.publish"
+    resource  = google_pubsub_topic.verify_email_topic.name
+  }         
+  available_memory_mb    = var.available_memory
+  timeout = 540
+  ingress_settings       = "ALLOW_ALL"
+
+  environment_variables = {
+    MAINGUN_API_KEY   = var.maingun_api_key
+    POSTGRES_HOST     = google_sql_database_instance.cloud_instance.ip_address.0.ip_address # Fetching the IP address dynamically
+    POSTGRES_DB       = var.database_name
+    POSTGRES_USER     = var.database_user_name
+    POSTGRES_PASSWORD = random_password.generated_password.result
+  }
+  vpc_connector = google_vpc_access_connector.vpc-serverless-0003tx-unique-connector-2-xyz789.name
+
+  service_account_email = google_service_account.vm_service_account.email
+
+}
+
 
 # echo "DB_HOST=${google_sql_database_instance.cloud_instance.ip_address}" >> .env
 
