@@ -195,7 +195,6 @@ variable "postgres_firewall_priority" {
 }
 
 
-
 variable "postgres_firewall_target_tags" {
 
 }
@@ -278,4 +277,148 @@ variable "subscription_ttl" {
 
 variable "ack_deadline_seconds" {
   
+}
+
+variable "autoscaler_min_replicas" {
+  description = "Minimum number of replicas"
+  type        = number
+  default     = 3
+}
+
+variable "autoscaler_max_replicas" {
+  description = "Maximum number of replicas"
+  type        = number
+  default     = 6
+}
+
+variable "autoscaler_cool_down_period_sec" {
+  description = "Cooldown period for autoscaler"
+  type        = number
+  default     = 60
+}
+
+variable "autoscaler_cpu_utilization_target" {
+  description = "Target CPU utilization for autoscaler"
+  type        = number
+  default     = 0.6
+}
+
+
+variable "network_prefix" {
+  description = "load balancer name"
+}
+
+
+variable "ssl_certificate_name" {
+  description = "ssl certificate name"
+}
+
+variable "ssl_domain" {
+  description = "domain for ssl config"
+}
+
+variable "ssl_description" {
+  description = "Managed SSl certificate for abhaydee.com"
+}
+
+variable "ssl_policy_name" {
+  description = "name of the ssl policy"
+}
+
+variable "ssl_profile" {
+  description = "profile for ssl config"
+}
+
+variable "target_tags" {
+  description = "target tags for resources"
+}
+
+variable "load-balancer-ingress" {
+  description = "load balance ingress name"
+}
+
+
+variable "ingress_direction" {
+  description = "ingress direction"
+}
+
+
+variable "health_check_name" {
+  description = "health checker name"
+}
+
+
+variable "health_check_interval_sec" {
+  description = "Check interval second for health checker"
+}
+
+variable "health_check_timeout_sec" {
+  description = "timeout second for health check"
+}
+
+variable "unhealthy_threshold" {
+  description = "unhealthy threshold value"
+}
+
+variable "healthy_threshold" {
+  description = "healthy threshold value"
+}
+
+variable "url_map_name" {
+  description = "url map name"
+}
+
+variable "https_proxy" {
+  description = "proxy name for https"
+}
+
+variable "forwarding_rule_name" {
+  description = "forwarding rule name "
+}
+
+variable "forwarding_rule_protocol" {
+  description = "forwarding rule protocol"
+}
+
+variable "load_balancing_scheme" {
+  description = "load balancing scheme"
+}
+
+variable "port_range" {
+  description = "port range for forwarding to https"
+}
+
+variable "global_address_name" {
+  description = "global address name"
+}
+
+variable "regional_instance_group_manager_name" {
+  description = "regional instance group manager name"
+}
+
+
+variable "distributed_policy_zones" {
+  description = "zones for distribution"
+}
+
+
+variable "base_instance_name" {
+  description = "base_instance_name"
+}
+
+variable "backend_service_name" {
+  description = "backend service name"
+}
+
+
+variable "regional_instance_template_name" {
+  description = "regional instance template name"
+}
+
+variable "instance_template_disk_type" {
+  description = "disk type"
+}
+
+variable "instance_template_disk_size" {
+  description = "disk size"
 }
