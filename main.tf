@@ -71,6 +71,20 @@ resource "google_compute_firewall" "allow_ssh" {
   target_tags   = ["webapp-subnet-0"]
 }
 
+resource "google_compute_firewall" "allow-webapp-firewall" {
+  name    = "allow-firewall-${0}"
+  network = google_compute_network.vpc_network[0].name 
+
+  allow {
+    protocol = "tcp"
+    ports = ["5432"]
+
+  }
+  source_ranges = ["10.2.0.0/28"]
+  direction = "EGRESS"
+  priority = 500
+}
+
 resource "google_compute_global_address" "instance_ip" {
   name          = var.ip_instance_name
   purpose       = var.ip_instance_purpose
