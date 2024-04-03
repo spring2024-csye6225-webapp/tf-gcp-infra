@@ -59,8 +59,8 @@ variable "db_subnet_cidr" {
 
 resource "google_compute_firewall" "allow_ssh" {
   count   = var.vpc_count
-  name    = "allow-ssh-${count.index}"
-  network = google_compute_network.vpc_network[count.index].name
+  name    = "allow-ssh-0"
+  network = google_compute_network.vpc_network[0].name
 
   allow {
     protocol = "tcp"
