@@ -1,3 +1,5 @@
+
+
 variable "project_id" {
   description = "ID of the Google Cloud project"
 }
@@ -300,7 +302,7 @@ variable "autoscaler_cool_down_period_sec" {
 variable "autoscaler_cpu_utilization_target" {
   description = "Target CPU utilization for autoscaler"
   type        = number
-  default     = 0.6
+  default     = 0.15
 }
 
 
@@ -421,4 +423,24 @@ variable "instance_template_disk_type" {
 
 variable "instance_template_disk_size" {
   description = "disk size"
+}
+
+variable "terraform_key_ring_name" {
+  
+}
+
+variable "vm_crypto_key" {
+  
+}
+
+variable "rotation_period" {
+  
+}
+
+variable "cloudsql-crypto-key" {
+  
+}
+
+variable "bucket-crypto-key" {
+  
 }
