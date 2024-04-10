@@ -639,7 +639,7 @@ resource "google_kms_crypto_key" "cloudsql_crypto" {
 resource "google_kms_crypto_key" "storage" {
   name = var.bucket-crypto-key
   key_ring = google_kms_key_ring.terraform-key-ring-test-v11.id
-  rotation_period = "2592000s"
+  rotation_period = var.rotation_period
 }
 
 resource "google_project_iam_binding" "vm_crypto_key_binding" {
